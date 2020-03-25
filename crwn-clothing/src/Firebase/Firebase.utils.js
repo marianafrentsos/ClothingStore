@@ -22,7 +22,6 @@ const config = {
   measurementId: MEASSUREMENT_ID
 };
 
-console.log(config.authDomain);
 firebase.initializeApp(config);
 
 export const auth = firebase.auth();

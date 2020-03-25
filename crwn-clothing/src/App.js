@@ -5,19 +5,40 @@ import "./App.css";
 import { Switch, Route } from "react-router-dom";
 import Header from "./components/Header/Header.jsx";
 import SignIn_SignUp from "../src/pages/SignIn_SignUp/SignIn_SigUp.jsx";
+import { auth } from "./Firebase/Firebase.utils.js";
 
-function App() {
-  return (
-    <div>
-      <Header />
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      currentUser: null
+    };
+  }
+  unsubscribeFromAuth = null;
 
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/shop" component={ShopPage} />
-        <Route path="/signin" component={SignIn_SignUp} />
-      </Switch>
-    </div>
-  );
+  componentDidMount() {
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
+      this.setState({ currentUser: user });
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeFromAuth();
+  }
+
+  render() {
+    return (
+      <div>
+        <Header currentUser={this.state.currentUser} />
+
+        <Switch>
+          <Route exact path="/" component={HomePage} />
+          <Route path="/shop" component={ShopPage} />
+          <Route path="/signin" component={SignIn_SignUp} />
+        </Switch>
+      </div>
+    );
+  }
 }
 
 export default App;
